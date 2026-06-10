@@ -1,10 +1,20 @@
 import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
-
 export async function POST(req: NextRequest) {
   try {
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
+      console.error("GEMINI_API_KEY environment variable is not set");
+      return NextResponse.json(
+        { error: "Error de configuración del servidor. Contacta al administrador." },
+        { status: 500 }
+      );
+    }
+
+    const ai = new GoogleGenAI({ apiKey });
+
     const { image } = await req.json();
 
     if (!image || typeof image !== "string") {
@@ -65,3 +75,4 @@ Reglas:
     );
   }
 }
+
